@@ -6,7 +6,6 @@
 #include <queue>
 using namespace std;
 
-
 struct SensorReading {
     int sensorID;
     double value;
@@ -25,11 +24,11 @@ struct SensorReading {
         StringType = " ";
     }
 };
-struct Alert{
+
+struct Alert {
     int priority;
     string message;
     string AlertType;
-
     Alert(int p, string msg, string type) {
         priority = p;
         message = msg;
@@ -40,13 +39,16 @@ struct Alert{
         message = " ";
         AlertType = " ";
     }
+    bool operator<(const Alert& other) const {
+        return priority < other.priority;
+    }
 };
 
 class SensorProcessor {
     unordered_map<int, SensorReading> sensorData;
     unordered_map<string, vector<SensorReading>> locationMap;
     priority_queue<Alert> alertQueue;
-    public:
+public:
     void addSensorReading(SensorReading reading) {
         sensorData[reading.sensorID] = reading;
         locationMap[reading.Location].push_back(reading);
@@ -80,9 +82,7 @@ class SensorProcessor {
 int main() {
     SensorProcessor processor;
     int choice;
-    
     cout << "=== Sensor Processing System ===" << endl;
-    
     while(true) {
         cout << "\n--- Menu ---" << endl;
         cout << "1. Add Sensor Reading" << endl;
@@ -93,12 +93,10 @@ int main() {
         cout << "6. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
-        
         if(choice == 1) {
             int sensorID;
             double value;
             string location, type;
-            
             cout << "Enter Sensor ID: ";
             cin >> sensorID;
             cout << "Enter Value: ";
@@ -107,7 +105,6 @@ int main() {
             cin >> location;
             cout << "Enter Sensor Type: ";
             cin >> type;
-            
             SensorReading reading(sensorID, value, location, type);
             processor.addSensorReading(reading);
             cout << "Sensor reading added successfully!" << endl;
@@ -115,7 +112,6 @@ int main() {
         else if(choice == 2) {
             int priority;
             string message, alertType;
-            
             cout << "Enter Priority: ";
             cin >> priority;
             cin.ignore();
@@ -123,7 +119,6 @@ int main() {
             getline(cin, message);
             cout << "Enter Alert Type: ";
             getline(cin, alertType);
-            
             Alert alert(priority, message, alertType);
             processor.addAlert(alert);
             cout << "Alert added successfully!" << endl;
@@ -135,7 +130,6 @@ int main() {
             int sensorID;
             cout << "Enter Sensor ID: ";
             cin >> sensorID;
-            
             SensorReading reading = processor.getSensorReading(sensorID);
             if(reading.sensorID != -1) {
                 cout << "Sensor ID: " << reading.sensorID << endl;
@@ -150,7 +144,6 @@ int main() {
             string location;
             cout << "Enter Location: ";
             cin >> location;
-            
             vector<SensorReading> readings = processor.getReadingsByLocation(location);
             if(readings.empty()) {
                 cout << "No readings found for this location." << endl;
@@ -171,6 +164,5 @@ int main() {
             cout << "Invalid choice. Please try again." << endl;
         }
     }
-    
     return 0;
 }
